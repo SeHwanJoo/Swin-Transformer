@@ -23,7 +23,7 @@ def load_checkpoint(config, model, optimizer, lr_scheduler, logger):
             config.MODEL.RESUME, map_location='cpu', check_hash=True)
     else:
         checkpoint = torch.load(config.MODEL.RESUME, map_location='cpu')
-    if config.eval:
+    if config.EVAL_MODE:
         msg = model.load_state_dict(checkpoint['model'], strict=False)
     else:
         msg = model.load_finetune_checkpoint(checkpoint['model'])
