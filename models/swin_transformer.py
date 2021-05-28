@@ -539,6 +539,20 @@ class SwinTransformer(nn.Module):
 
         self.apply(self._init_weights)
 
+    def load_finetune_checkpoint(self, path):
+        # m = torch.load(path)['state_dict']
+        model_dict = self.state_dict()
+        for k in path.keys():
+            if 'attn_mask' in k or 'fc_total' in k:
+                continue
+
+            if k in model_dict:
+                pname = k
+                pval = path[k]
+                model_dict[pname] = pval.clone().to(model_dict[pname].device)
+
+        self.load_state_dict(model_dict)
+
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
             trunc_normal_(m.weight, std=.02)
